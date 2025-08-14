@@ -5,17 +5,16 @@ import Create from './Create'
 import AllItem from './AllItem'
 
 
-const data = [
-  { id: 1, name: "Apple", stock: 5, unit: 'kg' },
-  { id: 2, name: "Apple", stock: 15, unit: 'kg' },
-  { id: 3, name: "Apple", stock: 25, unit: 'kg' },
-  { id: 4, name: "Apple", stock: 5, unit: 'kg' },
-  { id: 5, name: "Apple", stock: 10, unit: 'kg' },
-]
-
 const HomeScreen = () => {
 
   const [myView, setMyView] = useState(0)
+  const [data , setData ] = useState([
+    { id: 1, name: "Apple", stock: 5, unit: 'kg' },
+    { id: 2, name: "Apple", stock: 15, unit: 'kg' },
+    { id: 3, name: "Apple", stock: 25, unit: 'kg' },
+    { id: 4, name: "Apple", stock: 5, unit: 'kg' },
+    { id: 5, name: "Apple", stock: 10, unit: 'kg' },
+  ])
 
   return (
     <View className=' bg-white p-4  '>
@@ -49,7 +48,7 @@ const HomeScreen = () => {
 
       {myView === 0 && <AllItem data={data} />}
       {myView === 1 && <LowStock data={data} />}
-      {myView === 2 && <Create data={data} />}
+      {myView === 2 && <Create data={data} setData={setData} />}
 
 
     </View>
