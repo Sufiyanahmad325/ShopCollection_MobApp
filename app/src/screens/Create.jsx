@@ -1,21 +1,24 @@
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useState } from 'react'
+import { Picker } from "@react-native-picker/picker";
 
 const Create = ({ data, setData }) => {
     const [itemName, setItemName] = useState('')
     const [stock, setStock] = useState('')
     const [isEdit, setIsEdit] = useState(null)
+    const [selectOptionValue, setselectOptionValue] = useState('')
 
 
 
     const addHandlerItem = () => {
 
         if (isEdit != null) {
-            setData(prev => prev.map(item => item.id == isEdit.id ? { ...item, name: itemName, stock: stock } : item))
-
+            if (!itemName.trim() || !stock.trim()) return
+            setData(prev => prev.map(item => item.id == isEdit.id ? { ...item, name: itemName, stock: stock, unit: selectOptionValue } : item))
             setIsEdit(null)
             setItemName('')
             setStock('')
+            setselectOptionValue('') // Resetting the select option value after edit
             return
         }
 
@@ -23,11 +26,21 @@ const Create = ({ data, setData }) => {
             id: Date.now(),
             name: itemName,
             stock: stock,
+            unit: selectOptionValue || 'kg'
         }
-        setData([...data, obj])
+
+        if (!itemName.trim() || !stock.trim()) {
+            Alert.alert('Error', 'Please fill all fields correctly.')
+            return
+        }
+
+        setData([obj, ...data])
         setItemName('')
         setStock('')
+        setselectOptionValue('') // Resetting the select option value after adding a new item
     }
+
+
 
     const deleteHandle = (id) => {
         setData(prev => prev.filter(ele => ele.id !== id))
@@ -38,14 +51,15 @@ const Create = ({ data, setData }) => {
         setIsEdit(item)
         setItemName(item.name)
         setStock(item.stock)
+        setselectOptionValue(item.unit)
     }
 
-    useEffect(() => { }, [])
 
 
     return (
-        <View style={[styles.container , {flex:1}]}>
+        <View style={[styles.container, { flex: 1 }]}>
 
+            {/* =========== From is here ================= */}
             <TextInput
                 placeholder='Enter an Item name'
                 placeholderTextColor={'#999'}
@@ -54,13 +68,35 @@ const Create = ({ data, setData }) => {
                 onChangeText={(item) => setItemName(item)}
             />
 
-            <TextInput
-                placeholder='Enter Stock Amount'
-                placeholderTextColor={'#999'}
-                style={styles.inputText}
-                value={stock}
-                onChangeText={(item) => setStock(item)}
-            />
+
+            <View style={{ gap: 10, width: '100%', flexDirection: 'row' }}>
+
+                <TextInput
+                    type='number'
+                    placeholder='Unit count'
+                    placeholderTextColor={'#999'}
+                    style={[styles.inputText, { width: '50%' }]}
+                    value={stock}
+                    onChangeText={(item) => setStock(item)}
+                    keyboardType="numeric"
+                />
+
+                {/* // picker ke under ham border nhi de sakte isliye view ke under liya hai */}
+                <View style={styles.PickerPrents}>
+                    <Picker
+                        selectedValue={selectOptionValue}
+                        onValueChange={(itemValue) => setselectOptionValue(itemValue)}
+                    >
+                        <Picker.Item label="Select Unit" value="" />
+                        <Picker.Item label="KG" value="kg" />
+                        <Picker.Item label="Pack" value="pk" />
+                        <Picker.Item label="Peace" value="pc" />
+                        <Picker.Item label="BAG" value="bg" />
+                    </Picker>
+                </View>
+
+            </View>
+
 
             <Pressable
                 style={styles.btn}
@@ -71,7 +107,7 @@ const Create = ({ data, setData }) => {
 
 
 
-            {/* list is here */}
+            {/* =============list is here===================== */}
 
 
             <View className={` flex-row justify-between pt-7 pb-3`}>
@@ -83,17 +119,31 @@ const Create = ({ data, setData }) => {
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <View className={` flex-row justify-between rounded-md  p-3 ${item.stock < 20 ? 'bg-red-300' : 'bg-green-400'}  `}>
-                        <Text style={styles.ItemText}>{item.name}</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 20, width: '40%' }}>
-                            <Text style={styles.ItemText}>{item.stock} {item.unit}</Text>
-                            <Pressable onPress={() => editHandle(item)}>
-                                <Text style={styles.ItemText}>Edit</Text>
+                    <View
+                        className={`
+                     flex-row justify-between rounded-md p-3  
+                        ${item.unit == 'kg' || item.unit == 'pc' ? item.stock < 20 ? 'bg-red-300' : 'bg-green-400' :
+                                item.unit == 'bg' ? item.stock < 6 ? 'bg-red-300' : 'bg-green-400' :
+                                    item.unit == 'pc' ? item.stock < 30 ? 'bg-red-300' : 'bg-green-400' :
+                                        item.unit == 'pk' ? item.stock < 20 ? 'bg-red-300' : 'bg-green-400' : ''
+                            }
+                    `}
+                    >
+                        <Text style={{ width: '45%' }}>{item.name}</Text>
+
+                        <View style={styles.controlBtnParents}>
+                            <Text style={{ width: '30%' }}>{item.stock} {item.unit}</Text>
+
+                            <Pressable style={styles.controlBtn} onPress={() => editHandle(item)}>
+                                <Text   >Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteHandle(item.id)}>
-                                <Text style={styles.ItemText}>Delete</Text>
+
+                            <Pressable style={styles.controlBtn} onPress={() => deleteHandle(item.id)}>
+                                <Text >Delete</Text>
                             </Pressable>
+
                         </View>
+
                     </View>
                 )}
             />
@@ -111,7 +161,7 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 30,
         gap: 10,
-        minHeight:'90%',
+        minHeight: '90%',
     },
     text: {
         fontWeight: 600,
@@ -137,5 +187,28 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '700',
         fontSize: 15,
+    },
+    PickerPrents: {
+        justifyContent: 'center',
+        width: '47%',
+        borderWidth: 1.5,
+        borderColor: 'green',
+        borderRadius: 7,
+        color: '#000',
+        paddingHorizontal: 10,
+    },
+    controlBtnParents: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 20,
+        width: '55%'
+    },
+
+    controlBtn: {
+        borderWidth: 1,
+        paddingVertical: 5,
+        paddingHorizontal: 6,
+        borderRadius: 5,
+        fontWeight: '500'
     }
 })

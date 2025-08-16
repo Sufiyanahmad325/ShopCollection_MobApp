@@ -8,31 +8,32 @@ import AllItem from './AllItem'
 const HomeScreen = () => {
 
   const [myView, setMyView] = useState(0)
-  const [data , setData ] = useState([
-    { id: 1, name: "Apple", stock: '5', unit: 'kg' },
-  { id: 2, name: "Apple", stock: '15', unit: 'kg' },
-  { id: 3, name: "Apple", stock: '25', unit: 'kg' },
-  { id: 4, name: "Apple", stock: '5', unit: 'kg' },
-  { id: 5, name: "Apple", stock: '10', unit: 'kg' },
-  { id: 6, name: "Apple", stock: '12', unit: 'kg' },
-  { id: 7, name: "Apple", stock: '8', unit: 'kg' },
-  { id: 8, name: "Apple", stock: '18', unit: 'kg' },
-  { id: 9, name: "Apple", stock: '22', unit: 'kg' },
-  { id: 10, name: "Apple", stock: '6', unit: 'kg' },
-  { id: 11, name: "Apple", stock: '14', unit: 'kg' },
-  { id: 12, name: "Apple", stock: '9', unit: 'kg' },
-  { id: 13, name: "Apple", stock: '20', unit: 'kg' },
-  { id: 14, name: "Apple", stock: '3', unit: 'kg' },
-  { id: 15, name: "Apple", stock: '17', unit: 'kg' },
-  { id: 16, name: "Apple", stock: '11', unit: 'kg' },
-  { id: 17, name: "Apple", stock: '7', unit: 'kg' },
-  { id: 18, name: "Apple", stock: '16', unit: 'kg' },
-  { id: 19, name: "Apple", stock: '4', unit: 'kg' },
-  { id: 20, name: "Apple", stock: '13', unit: 'kg' },
-  ])
+  const [data, setData] = useState([
+    { id: 1, name: "Apple", stock: 5, unit: "kg" },
+    { id: 2, name: "Banana", stock: 15, unit: "kg" },
+    { id: 3, name: "Orange", stock: 25, unit: "kg" },
+    { id: 4, name: "Mango", stock: 5, unit: "kg" },
+    { id: 5, name: "Pineapple", stock: 10, unit: "kg" },
+    { id: 6, name: "Grapes", stock: 12, unit: "kg" },
+    { id: 7, name: "Papaya", stock: 20, unit: "pk" },
+    { id: 8, name: "Watermelon", stock: 19, unit: "pk" },
+    { id: 9, name: "Peach", stock: 22, unit: "kg" },
+    { id: 10, name: "Plum", stock: 6, unit: "kg" },
+    { id: 11, name: "Kiwi", stock: 14, unit: "kg" },
+    { id: 12, name: "Guava", stock: 9, unit: "kg" },
+    { id: 13, name: "Cherry", stock: 7, unit: "bg" },
+    { id: 14, name: "Strawberry", stock: 5, unit: "bg" },
+    { id: 15, name: "Blueberry", stock: 17, unit: "kg" },
+    { id: 16, name: "Pomegranate", stock: 11, unit: "kg" },
+    { id: 17, name: "Litchi", stock: 7, unit: "kg" },
+    { id: 18, name: "Coconut", stock: 30, unit: "pc" },
+    { id: 19, name: "Dragonfruit", stock: 29, unit: "pc" },
+    { id: 20, name: "Pear", stock: 13, unit: "kg" }
+  ]
+  )
 
   return (
-    <View className=' bg-white p-4 h-full  '> 
+    <View className=' bg-white p-4 h-full  '>
       <Text className='text-[26px]'>Dashboard</Text>
 
       {/* btns */}

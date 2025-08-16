@@ -14,7 +14,24 @@ const AllItem = ({ data }) => {
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <View className={` flex-row justify-between rounded-md px-14 p-3 ${item.stock < 20 ? 'bg-red-300' : 'bg-green-400'}  `}>
+                    // <View className={` flex-row justify-between rounded-md px-14 p-3 ${item.stock < 20 ? 'bg-red-300' : 'bg-green-400'}  `}>
+                    //     <Text style={styles.ItemText}>{item.name}</Text>
+                    //     <Text style={styles.ItemText}>{item.stock} {item.unit}</Text>
+                    // </View>
+
+                    <View
+                    className={`
+                      flex-row justify-between rounded-md px-14 p-3 
+                      ${                        
+                         item.unit == 'kg' || item.unit == 'pc' ? item.stock < 30 ? 'bg-red-300' : 'bg-green-400' 
+                        : item.unit == 'bg' ? item.stock < 6 ? 'bg-red-300' : 'bg-green-400' 
+                        : item.unit == 'pc' ? item.stock < 30 ? 'bg-red-300' : 'bg-green-400' 
+                        : item.unit == 'pk' ? item.stock < 20 ? 'bg-red-300' : 'bg-green-400' 
+                        : ''
+                      }
+                    `}
+                  >
+                  
                         <Text style={styles.ItemText}>{item.name}</Text>
                         <Text style={styles.ItemText}>{item.stock} {item.unit}</Text>
                     </View>
