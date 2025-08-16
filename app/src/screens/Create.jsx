@@ -1,23 +1,50 @@
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const Create = ({ data ,setData }) => {
+const Create = ({ data, setData }) => {
     const [itemName, setItemName] = useState('')
     const [stock, setStock] = useState('')
+    const [isEdit, setIsEdit] = useState(null)
 
-    const addHandlerItem =()=>{
-        let obj = {
-            id:Date.now(),
-            name:itemName,
-            stock:stock,
-        }
-            setData([...data , obj])
+
+
+    const addHandlerItem = () => {
+
+        if (isEdit != null) {
+            setData(prev => prev.map(item => item.id == isEdit.id ? { ...item, name: itemName, stock: stock } : item))
+
+            setIsEdit(null)
             setItemName('')
             setStock('')
+            return
+        }
+
+        let obj = {
+            id: Date.now(),
+            name: itemName,
+            stock: stock,
+        }
+        setData([...data, obj])
+        setItemName('')
+        setStock('')
     }
 
+    const deleteHandle = (id) => {
+        setData(prev => prev.filter(ele => ele.id !== id))
+    }
+
+
+    const editHandle = (item) => {
+        setIsEdit(item)
+        setItemName(item.name)
+        setStock(item.stock)
+    }
+
+    useEffect(() => { }, [])
+
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container , {flex:1}]}>
 
             <TextInput
                 placeholder='Enter an Item name'
@@ -37,9 +64,9 @@ const Create = ({ data ,setData }) => {
 
             <Pressable
                 style={styles.btn}
-                onPress={()=>addHandlerItem()}
+                onPress={() => addHandlerItem()}
             >
-                <Text style={styles.btnText}>ADD ITEM IN STOCK</Text>
+                <Text style={styles.btnText}>{isEdit != null ? 'Edit ITEM IN STOCK' : 'ADD ITEM IN STOCK'}</Text>
             </Pressable>
 
 
@@ -51,17 +78,21 @@ const Create = ({ data ,setData }) => {
                 <Text style={styles.text}>All Item in the Stock</Text>
             </View>
 
-            <FlatList
+            <FlatList // yaha pe flex-1 dene se list show q nhi kr rha hai
                 contentContainerStyle={{ gap: 10 }} // gap is given like this is flatList
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <View className={` flex-row justify-between rounded-md  p-3 ${item.stock < 20 ? 'bg-red-300' : 'bg-green-400'}  `}>
                         <Text style={styles.ItemText}>{item.name}</Text>
-                        <Text style={styles.ItemText}>{item.stock} {item.unit}</Text>
-                        <View style={{flexDirection:'row' ,gap:10}}>
-                            <Text style={styles.ItemText}>Edit</Text>
-                            <Text style={styles.ItemText}>Delete</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 20, width: '40%' }}>
+                            <Text style={styles.ItemText}>{item.stock} {item.unit}</Text>
+                            <Pressable onPress={() => editHandle(item)}>
+                                <Text style={styles.ItemText}>Edit</Text>
+                            </Pressable>
+                            <Pressable onPress={() => deleteHandle(item.id)}>
+                                <Text style={styles.ItemText}>Delete</Text>
+                            </Pressable>
                         </View>
                     </View>
                 )}
@@ -79,11 +110,12 @@ export default Create
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 30,
-        gap: 10
+        gap: 10,
+        minHeight:'90%',
     },
-    text:{
-        fontWeight:600,
-        fontSize:18
+    text: {
+        fontWeight: 600,
+        fontSize: 18
     },
     inputText: {
         width: '100%',

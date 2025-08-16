@@ -3,8 +3,8 @@ import React from 'react'
 
 const AllItem = ({ data }) => {
     return (
-        <View>
-            <View className={` flex-row justify-between px-14 pt-6 pb-5`}>
+        <View style={{ height:'90%'}}>  
+            <View className={` flex-row justify-between px-14 pt-6 pb-5  `}>
                 <Text style={styles.text}>AllItem</Text>
                 <Text style={styles.text}>Quality</Text>
             </View>
