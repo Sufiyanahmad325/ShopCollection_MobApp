@@ -4,7 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 
 const Create = ({ data, setData }) => {
     const [itemName, setItemName] = useState('')
-    const [stock, setStock] = useState('')
+    const [stock, setStock] = useState()
     const [isEdit, setIsEdit] = useState(null)
     const [selectOptionValue, setselectOptionValue] = useState('')
 
@@ -13,7 +13,7 @@ const Create = ({ data, setData }) => {
     const addHandlerItem = () => {
 
         if (isEdit != null) {
-            if (!itemName.trim() || !stock) {
+            if (!itemName.trim() || !stock || stock < 0) {
                 Alert.alert('Error', 'Please fill all fields correctly.')
                 return
             }
@@ -32,7 +32,7 @@ const Create = ({ data, setData }) => {
             unit: selectOptionValue || 'kg'
         }
 
-        if (!itemName.trim() || !stock) {
+        if (!itemName.trim() || !stock || stock < 0) {
             Alert.alert('Error', 'Please fill all fields correctly.')
             return
         }
