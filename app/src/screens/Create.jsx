@@ -13,7 +13,10 @@ const Create = ({ data, setData }) => {
     const addHandlerItem = () => {
 
         if (isEdit != null) {
-            if (!itemName.trim() || !stock.trim()) return
+            if (!itemName.trim() || !stock) {
+                Alert.alert('Error', 'Please fill all fields correctly.')
+                return
+            }
             setData(prev => prev.map(item => item.id == isEdit.id ? { ...item, name: itemName, stock: stock, unit: selectOptionValue } : item))
             setIsEdit(null)
             setItemName('')
@@ -25,11 +28,11 @@ const Create = ({ data, setData }) => {
         let obj = {
             id: Date.now(),
             name: itemName,
-            stock: stock,
+            stock: Number(stock),
             unit: selectOptionValue || 'kg'
         }
 
-        if (!itemName.trim() || !stock.trim()) {
+        if (!itemName.trim() || !stock) {
             Alert.alert('Error', 'Please fill all fields correctly.')
             return
         }
@@ -48,9 +51,27 @@ const Create = ({ data, setData }) => {
 
 
     const editHandle = (item) => {
+
+        if(isEdit?.id == item.id ) {
+            setIsEdit(null)
+             setIsEdit(null)
+             setItemName('')
+             setStock()
+             setselectOptionValue('')
+            return
+        }
+
+        // if(isEdit != null){
+        //      setIsEdit(null)
+        //      setItemName('')
+        //      setStock()
+        //      setselectOptionValue('')
+        //     return
+        // }
+
         setIsEdit(item)
         setItemName(item.name)
-        setStock(item.stock)
+        setStock(String(item.stock))
         setselectOptionValue(item.unit)
     }
 
@@ -122,20 +143,25 @@ const Create = ({ data, setData }) => {
                     <View
                         className={`
                      flex-row justify-between rounded-md p-3  
-                        ${item.unit == 'kg' || item.unit == 'pc' ? item.stock < 20 ? 'bg-red-300' : 'bg-green-400' :
-                                item.unit == 'bg' ? item.stock < 6 ? 'bg-red-300' : 'bg-green-400' :
-                                    item.unit == 'pc' ? item.stock < 30 ? 'bg-red-300' : 'bg-green-400' :
-                                        item.unit == 'pk' ? item.stock < 20 ? 'bg-red-300' : 'bg-green-400' : ''
+                        ${item.unit == 'kg' || item.unit == 'pc' 
+                            ? item.stock < 30 ? 'bg-red-300' : 'bg-green-400' 
+                          : item.unit == 'bg' 
+                            ? item.stock < 6 ? 'bg-red-300' : 'bg-green-400' 
+                          : item.unit == 'pc' 
+                            ? item.stock < 30 ? 'bg-red-300' : 'bg-green-400' 
+                          : item.unit == 'pk' 
+                            ? item.stock < 20 ? 'bg-red-300' : 'bg-green-400' 
+                          : ''
                             }
                     `}
                     >
                         <Text style={{ width: '45%' }}>{item.name}</Text>
 
                         <View style={styles.controlBtnParents}>
-                            <Text style={{ width: '30%' }}>{item.stock} {item.unit}</Text>
+                            <Text style={{ width: '30%'}}>{item.stock} {item.unit}</Text>
 
                             <Pressable style={styles.controlBtn} onPress={() => editHandle(item)}>
-                                <Text   >Edit</Text>
+                                <Text>{isEdit?.id == item.id ? 'cancel' :'Edit' }</Text>
                             </Pressable>
 
                             <Pressable style={styles.controlBtn} onPress={() => deleteHandle(item.id)}>
@@ -147,8 +173,6 @@ const Create = ({ data, setData }) => {
                     </View>
                 )}
             />
-
-
 
 
         </View>
@@ -199,8 +223,7 @@ const styles = StyleSheet.create({
     },
     controlBtnParents: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 20,
+        gap: 13,
         width: '55%'
     },
 
